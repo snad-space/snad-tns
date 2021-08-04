@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  tns-catalog-sql:
+    build: ./sql/
+    env_file:
+      - secret.env # TNS_API_KEY, TNS_BOT_ID, TNS_BOT_NAME
+    environment:
+      - POSTGRES_USER=catalog
+      - POSTGRES_PASSWORD=catalog
+    volumes:
+      - tns-catalog-sql-data:/var/run/postgresql
+    networks:
+      - app
+    restart: always
+
+  tns-catalog:
+    build: ./app/
+    networks:
+      - app
+      - proxy
+    environment:
+       VIRTUAL_HOST: tns.snad.space
+       HTTPS_METHOD: noredirect
+       DYNDNS_HOST: tns.snad.space
+       LETSENCRYPT_HOST: tns.snad.space
+       LETSENCRYPT_EMAIL: tns@snad.space
+    restart: always
+
+volumes:
+  tns-catalog-sql-data:
+
+networks:
+  app:
+  proxy:
+    external:
+      name: proxy
