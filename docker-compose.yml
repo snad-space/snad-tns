@@ -14,7 +14,7 @@ services:
       - app
     restart: always
 
-  tns-catalog:
+  tns-catalog-app:
     build: ./app/
     networks:
       - app

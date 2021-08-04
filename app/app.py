@@ -12,6 +12,9 @@ MAX_RADIUS_DEG = 1.0
 MAX_RADIUS_ARCSEC = 3600.0 * MAX_RADIUS_DEG
 
 
+routes = RouteTableDef()
+
+
 class JSONEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, BitString):
@@ -91,7 +94,7 @@ async def index(_) -> Response:
     )
 
 
-@app.route('/api/v1/help')
+@routes.get('/api/v1/help')
 async def help(_) -> Response:
     return Response(
         text=f'''
@@ -157,11 +160,11 @@ async def connection_setup(con: Connection):
     )
 
 
-async def app_on_startup(app: Application):
-    app['pg_pool'] = await create_pool(database='ztf', user='api', setup=connection_setup)
+async def on_startup(app: Application):
+    app['pg_pool'] = await create_pool(host='tns-catalog-sql', database='catalog', user='app', setup=connection_setup)
 
 
-async def app_on_cleanup(app: Application):
+async def on_cleanup(app: Application):
     await app['pg_pool'].close()
 
 
