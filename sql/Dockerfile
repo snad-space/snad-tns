@@ -19,5 +19,8 @@ RUN pip3 install -r /requirements.txt
 COPY docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
 COPY fill_table.py /fill_table.py
 
+# Required for upgrade container
+COPY docker-entrypoint-upgrade.sh /docker-entrypoint-upgrade.sh
+
 ENV POSTGRES_HOST_AUTH_METHOD trust
 ENV PYTHONUNBUFFERED 0

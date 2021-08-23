@@ -14,6 +14,15 @@ services:
       - app
     restart: always
 
+  tns-upgrade-data:
+    build: ./sql/
+    command: /docker-entrypoint-upgrade.sh
+    env_file:
+      - secret.env # TNS_API_KEY, TNS_BOT_ID, TNS_BOT_NAME
+    networks:
+      - app
+    restart: always
+
   tns-catalog-app:
     build: ./app/
     networks:

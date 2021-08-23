@@ -11,7 +11,7 @@ def main():
                 with con.cursor() as cur:
                     cur.execute('SELECT * FROM tns LIMIT 0')
             break
-        except psycopg2.OperationalError:
+        except (psycopg2.OperationalError, psycopg2.ProgrammingError):
             print('Waiting postgress to be available')
             sleep(1)
             pass

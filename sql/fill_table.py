@@ -22,6 +22,9 @@ ENGINE = sqlalchemy.create_engine(sqlalchemy.engine.url.URL(
 ))
 
 
+TABLE_NAME = 'tns'
+
+
 CHUNKSIZE = 1 << 10
 
 
@@ -44,13 +47,24 @@ def download_table():
         return response.content
 
 
+def drop_and_replace(df, table):
+    with ENGINE.connect() as connection, connection.begin():
+        connection.execute('DROP TABLE IF EXISTS {table}'.format(table=table))
+        df.to_sql(table, con=connection, chunksize=CHUNKSIZE, index=False)
+        connection.execute('ALTER TABLE {table} ADD PRIMARY KEY ("objid")'.format(table=table))
+        connection.execute('ALTER TABLE {table} ADD COLUMN coord spoint'.format(table=table))
+        connection.execute('UPDATE {table} SET coord = spoint("ra" * pi() / 180.0, "declination" * pi() / 180.0)'.format(table=table))
+        connection.execute('ALTER TABLE {table} ALTER COLUMN coord SET NOT NULL'.format(table=table))
+        connection.execute('CREATE INDEX {table}_coord_idx ON {table} USING GIST (coord)'.format(table=table))
+
+
 def upload_table(data):
     df = pd.read_csv(
         BytesIO(data),
         skiprows=1,
         compression='zip',
     )
-    df.to_sql('tns', ENGINE, chunksize=CHUNKSIZE, index=False)
+    drop_and_replace(df, TABLE_NAME)
 
 
 def main():
