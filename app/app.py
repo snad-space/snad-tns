@@ -87,7 +87,7 @@ async def index(_) -> Response:
                 See API details on <a href="/api/v1/help">/api/v1/help</a>
             </p>
             <p>
-                See source code <a href="http://github.com/snad-space/tns-db">on GitHub</a>
+                See source code <a href="https://github.com/snad-space/snad-tns">on GitHub</a>
             </p>
         ''',
         content_type='text/html',
