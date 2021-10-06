@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sys
 from io import BytesIO
 
 import pandas as pd
@@ -14,7 +15,17 @@ TNS_BOT_ID = os.environ['TNS_BOT_ID']
 TNS_BOT_NAME = os.environ['TNS_BOT_NAME']
 
 
+if len(sys.argv) <= 1:
+    HOSTNAME = None
+elif len(sys.argv) == 2:
+    HOSTNAME = sys.argv[1]
+else:
+    raise RuntimeError('Too many command-line arguments')
+
+
+
 ENGINE = sqlalchemy.create_engine(sqlalchemy.engine.url.URL(
+    host = HOSTNAME,
     drivername='postgresql+psycopg2',
     username='catalog',
     password='catalog',
