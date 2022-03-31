@@ -33,7 +33,7 @@ services:
        HTTPS_METHOD: noredirect
        DYNDNS_HOST: tns.snad.space
        LETSENCRYPT_HOST: tns.snad.space
-       LETSENCRYPT_EMAIL: tns@snad.space
+       LETSENCRYPT_EMAIL: letsencrypt@snad.space
     restart: always
 
 volumes:
