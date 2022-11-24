@@ -99,6 +99,8 @@ async def help(_) -> Response:
     return Response(
         text=f'''
             <h1>Available resources</h1>
+            <h2><font face='monospace'>/api/v1/all</font></h2>
+                <p> Get all objects</p>
             <h2><font face='monospace'>/api/v1/circle</font></h2>
                 <p> Get objects in the circle</p>
                 <p> Query parameters:</p>
@@ -106,6 +108,12 @@ async def help(_) -> Response:
                     <li><font face='monospace'>ra</font> &mdash; right ascension of the circle center, degrees. Mandatory</li>
                     <li><font face='monospace'>dec</font> &mdash; declination of the circle center, degrees. Mandatory</li>
                     <li><font face='monospace'>radius_arcsec</font> &mdash; circle radius, arcseconds. Mandatory, should be positive and less than {MAX_RADIUS_ARCSEC}</li>
+                </ul>
+            <h2><font face='monospace'>/api/v1/object</font></h2>
+                <p> Get object by name</p>
+                <p> Query parameters:</p>
+                <ul>
+                    <li><font face='monospace'>name</font> &mdash; name of the event, like "2018lwh". Mandatory</li>
                 </ul>
         ''',
         content_type='text/html',
@@ -140,6 +148,40 @@ async def select_in_circle(request: Request) -> Response:
             WHERE coord @ ${1}::scircle
             ''',
             circle,
+        )
+    data = [dict(row) for row in data]
+    return json_response(data)
+
+
+@routes.get('/api/v1/object')
+async def select_object(request: Request) -> Response:
+    try:
+        name = request.query['name']
+    except KeyError:
+        raise HTTPBadRequest(reason='"name" field should be specified')
+    # Name should be unique, but I wouldn't like to make this column UNIQUE and fail at DB creation time
+    async with request.app['pg_pool'].acquire() as con:
+        data = await con.fetch(
+            f'''
+            SELECT *
+            FROM tns
+            WHERE name = ${1}
+            LIMIT 1
+            ''',
+            name,
+        )
+    row = dict(data[0])
+    return json_response(row)
+
+
+@routes.get('/api/v1/all')
+async def select_all(request: Request) -> Response:
+    async with request.app['pg_pool'].acquire() as con:
+        data = await con.fetch(
+            f'''
+            SELECT *
+            FROM tns
+            ''',
         )
     data = [dict(row) for row in data]
     return json_response(data)

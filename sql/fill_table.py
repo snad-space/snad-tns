@@ -63,6 +63,7 @@ def drop_and_replace(df, table):
         connection.execute('DROP TABLE IF EXISTS {table}'.format(table=table))
         df.to_sql(table, con=connection, chunksize=CHUNKSIZE, index=False)
         connection.execute('ALTER TABLE {table} ADD PRIMARY KEY ("objid")'.format(table=table))
+        connection.execute('CREATE INDEX {table}_name_idx ON {table} ("name")'.format(table=table))
         connection.execute('ALTER TABLE {table} ADD COLUMN coord spoint'.format(table=table))
         connection.execute('UPDATE {table} SET coord = spoint("ra" * pi() / 180.0, "declination" * pi() / 180.0)'.format(table=table))
         connection.execute('ALTER TABLE {table} ALTER COLUMN coord SET NOT NULL'.format(table=table))

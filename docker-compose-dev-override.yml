@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  tns-catalog-sql:
+    volumes: []
+
+  tns-catalog-app:
+    networks:
+      - app
+    environment: []
+
+networks:
+  app:
