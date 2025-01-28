@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 python3 /wait_postgres.py
 

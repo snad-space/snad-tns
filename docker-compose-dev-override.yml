@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   tns-catalog-sql:
     volumes: []

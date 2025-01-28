@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-import psycopg2
+import logging
 from time import sleep
+
+import psycopg2
 
 
 def main():
@@ -12,11 +14,10 @@ def main():
                     cur.execute('SELECT * FROM tns LIMIT 0')
             break
         except (psycopg2.OperationalError, psycopg2.ProgrammingError):
-            print('Waiting postgress to be available')
+            logging.info('Waiting postgress to be available')
             sleep(1)
-            pass
 
-    print('POSTGRES IS AVAILABLE')
+    logging.warning('POSTGRES IS AVAILABLE')
 
 
 if __name__ == '__main__':

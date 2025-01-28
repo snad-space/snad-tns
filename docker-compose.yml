@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   tns-catalog-sql:
     build: ./sql/
@@ -42,5 +40,4 @@ volumes:
 networks:
   app:
   proxy:
-    external:
-      name: proxy
+    external: true
