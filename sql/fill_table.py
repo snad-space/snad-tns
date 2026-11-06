@@ -39,7 +39,7 @@ TABLE_NAME = 'tns'
 CHUNKSIZE = 1 << 10
 
 
-CATALOG_URL = 'https://www.wis-tns.org/system/files/tns_public_objects/tns_public_objects.csv.zip'
+CATALOG_URL = 'https://www.wis-tns.org/sites/default/files/tns_public_objects/tns_public_objects.csv.zip'
 
 
 def download_table():
